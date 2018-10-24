@@ -15,6 +15,13 @@ const char mapTestIcon = 't';
 
 using Map = std::array < std::array<char, maxColumnsCount>, maxRowsCount>;
 
+char playerMovementDirection;
+
+struct playerIconPos
+{
+	int playerIconRow;
+	int playerIconColumn;
+};
 
 void showMenu()
 {
@@ -24,6 +31,12 @@ void showMenu()
 	std::cout << "\tTip : use arrows to control your personage." << std::endl;
 	std::cout << std::endl;
 }
+
+void endGame()
+{
+	std::cout << "GAME OVER" << std::endl;
+}
+
 void fillMapBorders(Map &map)
 {
 	for (int row = 0; row < maxRowsCount; ++row)
@@ -49,23 +62,7 @@ void fillMapBorders(Map &map)
 		}
 	}
 }
-void genereteMap(Map &map)
-{
-	for (int row = 1; row < maxRowsCount-1; ++row)
-	{
-		for (int column = 1; column < maxColumnsCount-1; ++column)
-		{
-			if ((rand() % 5 == 1) && (row != maxRowsCount - exitRetreat && column != maxColumnsCount - exitRetreat * 2))
-			{
-				if(row != exitRetreat && column != exitRetreat * 2)
-				{
-					map[row][column] = mapWallIcon;
-				}
-			}
-		}
-		
-	}
-}
+
 void showMap(const Map &map)
 {
 	for (int row = 0; row < maxRowsCount; ++row)
@@ -79,12 +76,118 @@ void showMap(const Map &map)
 	}
 }
 
+void genereteMap(Map &map)
+{
+	for (int row = 1; row < maxRowsCount - 1; ++row)
+	{
+		for (int column = 1; column < maxColumnsCount - 1; ++column)
+		{
+			if ((rand() % 5 == 1) && (row != maxRowsCount - exitRetreat && column != maxColumnsCount - exitRetreat * 2))
+			{
+				if (row != exitRetreat && column != exitRetreat * 2)
+				{
+					map[row][column] = mapWallIcon;
+				}
+			}
+		}
+
+	}
+
+}
+playerIconPos findPlayerIcon(const Map &map, playerIconPos &position)
+{
+	for (int row = 1; row < maxRowsCount - 1; ++row)
+	{
+		for (int column = 1; column < maxColumnsCount - 1; ++column)
+		{
+			if (map[row][column] == mapPlayerIcon)
+			{
+				position.playerIconRow = row;
+				position.playerIconColumn = column;
+				return position;
+			}
+		}
+
+	}
+}
+void drawPlayerIcon(Map &map,const playerIconPos position)
+{
+	map[position.playerIconRow][position.playerIconColumn] = mapPlayerIcon;
+}
+void delPlayerIcon(Map &map,const playerIconPos &position) 
+{
+	map[position.playerIconRow][position.playerIconColumn] = mapFieldIcon;
+}
+void movePlayerIcon(Map &map,playerIconPos &position)
+{
+	playerMovementDirection = _getch();
+	switch (playerMovementDirection = _getch())
+	{
+	case 72:
+		findPlayerIcon(map, position);
+		if(map[position.playerIconRow-1][position.playerIconColumn]==mapExitIcon)
+		{
+			endGame();
+		}
+		else if(map[position.playerIconRow - 1][position.playerIconColumn] == mapFieldIcon)
+		{
+			delPlayerIcon(map, position);
+			--position.playerIconRow;
+			drawPlayerIcon(map,position);
+		}
+		break;
+	case 80:
+		findPlayerIcon(map, position);
+		if (map[position.playerIconRow + 1][position.playerIconColumn] == mapExitIcon)
+		{
+			endGame();
+		}
+		else if (map[position.playerIconRow + 1][position.playerIconColumn] == mapFieldIcon)
+		{
+			delPlayerIcon(map, position);
+			++position.playerIconRow;
+			drawPlayerIcon(map, position);
+		}
+		break;
+	case 75:
+		findPlayerIcon(map, position);
+		if (map[position.playerIconRow][position.playerIconColumn-1] == mapExitIcon)
+		{
+			endGame();
+		}
+		else if (map[position.playerIconRow][position.playerIconColumn-1] == mapFieldIcon)
+		{
+			delPlayerIcon(map, position);
+			--position.playerIconColumn;
+			drawPlayerIcon(map, position);
+		}
+		break;
+	case 77:
+		findPlayerIcon(map, position);
+		if (map[position.playerIconRow][position.playerIconColumn + 1] == mapExitIcon)
+		{
+			endGame();
+		}
+		else if (map[position.playerIconRow][position.playerIconColumn + 1] == mapFieldIcon)
+		{
+			delPlayerIcon(map, position);
+			++position.playerIconColumn;
+			drawPlayerIcon(map, position);
+		}
+		break;
+	default:
+		break;
+	}
+}
 int main()
 {
+	playerIconPos position;
 	Map map;
 	showMenu();
 	fillMapBorders(map);
 	genereteMap(map);
+	showMap(map);
+	movePlayerIcon(map,position);
 	showMap(map);
 	getchar();
 	return 0;
