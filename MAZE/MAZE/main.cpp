@@ -3,8 +3,8 @@
 #include <conio.h>
 
 
-const int maxRowsCount = 25;
-const int maxColumnsCount = 50;
+const int maxRowsCount = 29;
+const int maxColumnsCount = 54;
 const int exitRetreat = 4;
 
 const char mapPlayerIcon = '@';
@@ -23,6 +23,7 @@ struct playerIconPos
 	int playerIconColumn;
 };
 
+
 void showMenu()
 {
 	std::cout << std::endl;
@@ -30,11 +31,18 @@ void showMenu()
 	std::cout << "\tMain goal: Help dog to find exit." << std::endl;
 	std::cout << "\tTip : use arrows to control your personage." << std::endl;
 	std::cout << std::endl;
+	std::cout << "\t Do you want to play this great game?( 'y' - to play, 'n' - exit)." << std::endl;
 }
 
 void endGame()
 {
-	std::cout << "GAME OVER" << std::endl;
+	for (int i = 0; i < maxRowsCount; ++i)
+	{
+		std::cout << std::endl;
+	}
+	std::cout << "You won! The dog got out of the labyrinth! " << std::endl;
+	std::cout << "You won! The dog got out of the labyrinth! " << std::endl;
+	std::cout << "You won! The dog got out of the labyrinth! " << std::endl;
 }
 
 void fillMapBorders(Map &map)
@@ -127,6 +135,7 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 		findPlayerIcon(map, position);
 		if(map[position.playerIconRow-1][position.playerIconColumn]==mapExitIcon)
 		{
+			--position.playerIconRow;
 			endGame();
 		}
 		else if(map[position.playerIconRow - 1][position.playerIconColumn] == mapFieldIcon)
@@ -140,6 +149,7 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 		findPlayerIcon(map, position);
 		if (map[position.playerIconRow + 1][position.playerIconColumn] == mapExitIcon)
 		{
+			++position.playerIconRow;
 			endGame();
 		}
 		else if (map[position.playerIconRow + 1][position.playerIconColumn] == mapFieldIcon)
@@ -153,6 +163,7 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 		findPlayerIcon(map, position);
 		if (map[position.playerIconRow][position.playerIconColumn-1] == mapExitIcon)
 		{
+			--position.playerIconColumn;
 			endGame();
 		}
 		else if (map[position.playerIconRow][position.playerIconColumn-1] == mapFieldIcon)
@@ -166,6 +177,7 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 		findPlayerIcon(map, position);
 		if (map[position.playerIconRow][position.playerIconColumn + 1] == mapExitIcon)
 		{
+			++position.playerIconColumn;
 			endGame();
 		}
 		else if (map[position.playerIconRow][position.playerIconColumn + 1] == mapFieldIcon)
@@ -184,11 +196,26 @@ int main()
 	playerIconPos position;
 	Map map;
 	showMenu();
-	fillMapBorders(map);
-	genereteMap(map);
-	showMap(map);
-	movePlayerIcon(map,position);
-	showMap(map);
+	char playerAsk;
+	std::cin >> playerAsk;
+	while (playerAsk != 'y' && playerAsk != 'n')
+	{
+		std::cin >> playerAsk;
+	}
+	if (playerAsk == 'y')
+	{
+		fillMapBorders(map);
+		genereteMap(map);
+		while (true)
+		{
+			showMap(map);
+			movePlayerIcon(map, position);
+			if (map[position.playerIconRow][position.playerIconColumn] == mapExitIcon)
+				break;
+		}
+	}
+	getchar();
+	std::cout << "Press ENTER to exit." << std::endl;
 	getchar();
 	return 0;
 }
