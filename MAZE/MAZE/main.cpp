@@ -208,6 +208,7 @@ int main()
 		genereteMap(map);
 		while (true)
 		{
+			system("cls");
 			showMap(map);
 			movePlayerIcon(map, position);
 			if (map[position.playerIconRow][position.playerIconColumn] == mapExitIcon)
