@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 #include <array>
 #include <conio.h>
+#include <stdlib.h>
+#include <time.h>
 
 
 const int maxRowsCount = 29;
@@ -197,6 +199,7 @@ int main()
 	Map map;
 	showMenu();
 	char playerAsk;
+	srand(time(NULL));
 	std::cin >> playerAsk;
 	while (playerAsk != 'y' && playerAsk != 'n')
 	{
