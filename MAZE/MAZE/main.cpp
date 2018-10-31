@@ -30,7 +30,7 @@ void showMenu()
 {
 	std::cout << std::endl;
 	std::cout << "\t\t      ~***  MAZE  ***~" << std::endl;
-	std::cout << "\tMain goal: Help dog to find exit." << std::endl;
+	std::cout << "\tMain goal: Help dog(@) to find key(K) and then find exit(E)." << std::endl;
 	std::cout << "\tTip : use arrows to control your personage." << std::endl;
 	std::cout << std::endl;
 	std::cout << "\t Do you want to play this great game?( 'y' - to play, 'n' - exit)." << std::endl;
