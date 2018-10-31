@@ -13,18 +13,18 @@ const char mapPlayerIcon = '@';
 const char mapExitIcon = 'E';
 const char mapWallIcon = '#';
 const char mapFieldIcon = ' ';
-const char mapTestIcon = 't';
+const char mapKeyIcon = 'K';
 
 using Map = std::array < std::array<char, maxColumnsCount>, maxRowsCount>;
 
 char playerMovementDirection;
+bool keyIsRaised = false;
 
 struct playerIconPos
 {
 	int playerIconRow;
 	int playerIconColumn;
 };
-
 
 void showMenu()
 {
@@ -88,6 +88,7 @@ void showMap(const Map &map)
 
 void genereteMap(Map &map)
 {
+	int keyCounter = 0;
 	for (int row = 1; row < maxRowsCount - 1; ++row)
 	{
 		for (int column = 1; column < maxColumnsCount - 1; ++column)
@@ -97,7 +98,13 @@ void genereteMap(Map &map)
 				if (row != exitRetreat && column != exitRetreat * 2)
 				{
 					map[row][column] = mapWallIcon;
+					if (row <= maxRowsCount / 2 && column >= maxColumnsCount / 2 && keyCounter == 0)
+					{
+						map[row][column] = mapKeyIcon;
+						++keyCounter;
+					}
 				}
+				
 			}
 		}
 
@@ -135,7 +142,7 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 	{
 	case 72:
 		findPlayerIcon(map, position);
-		if(map[position.playerIconRow-1][position.playerIconColumn]==mapExitIcon)
+		if(map[position.playerIconRow-1][position.playerIconColumn]==mapExitIcon && keyIsRaised==true)
 		{
 			--position.playerIconRow;
 			endGame();
@@ -146,10 +153,17 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 			--position.playerIconRow;
 			drawPlayerIcon(map,position);
 		}
+		else if (map[position.playerIconRow - 1][position.playerIconColumn] == mapKeyIcon)
+		{
+			delPlayerIcon(map, position);
+			--position.playerIconRow;
+			drawPlayerIcon(map, position);
+			keyIsRaised = true;
+		}
 		break;
 	case 80:
 		findPlayerIcon(map, position);
-		if (map[position.playerIconRow + 1][position.playerIconColumn] == mapExitIcon)
+		if (map[position.playerIconRow + 1][position.playerIconColumn] == mapExitIcon && keyIsRaised == true)
 		{
 			++position.playerIconRow;
 			endGame();
@@ -160,10 +174,18 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 			++position.playerIconRow;
 			drawPlayerIcon(map, position);
 		}
+		else if (map[position.playerIconRow + 1][position.playerIconColumn] == mapKeyIcon)
+		{
+			delPlayerIcon(map, position);
+			++position.playerIconRow;
+			drawPlayerIcon(map, position);
+			keyIsRaised = true;
+		}
+
 		break;
 	case 75:
 		findPlayerIcon(map, position);
-		if (map[position.playerIconRow][position.playerIconColumn-1] == mapExitIcon)
+		if (map[position.playerIconRow][position.playerIconColumn-1] == mapExitIcon && keyIsRaised == true)
 		{
 			--position.playerIconColumn;
 			endGame();
@@ -174,10 +196,17 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 			--position.playerIconColumn;
 			drawPlayerIcon(map, position);
 		}
+		else if (map[position.playerIconRow][position.playerIconColumn - 1] == mapKeyIcon)
+		{
+			delPlayerIcon(map, position);
+			--position.playerIconColumn;
+			drawPlayerIcon(map, position);
+			keyIsRaised = true;
+		}
 		break;
 	case 77:
 		findPlayerIcon(map, position);
-		if (map[position.playerIconRow][position.playerIconColumn + 1] == mapExitIcon)
+		if (map[position.playerIconRow][position.playerIconColumn + 1] == mapExitIcon && keyIsRaised == true)
 		{
 			++position.playerIconColumn;
 			endGame();
@@ -187,6 +216,13 @@ void movePlayerIcon(Map &map,playerIconPos &position)
 			delPlayerIcon(map, position);
 			++position.playerIconColumn;
 			drawPlayerIcon(map, position);
+		}
+		else if (map[position.playerIconRow][position.playerIconColumn + 1] == mapKeyIcon)
+		{
+			delPlayerIcon(map, position);
+			++position.playerIconColumn;
+			drawPlayerIcon(map, position);
+			keyIsRaised = true;
 		}
 		break;
 	default:
